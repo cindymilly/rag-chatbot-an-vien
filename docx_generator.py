@@ -4,6 +4,7 @@ docx_generator.py
 Module khởi tạo file Microsoft Word (.docx) chuẩn Văn bản Hành chính Việt Nam
 theo quy định tại Nghị định 30/2020/NĐ-CP của Chính phủ:
 - Phông chữ chuẩn: Times New Roman
+- Màu chữ: 100% Đen thuần túy (#000000)
 - Cỡ chữ: Tiêu đề (14-15pt, Đậm), Tiêu đề mục (13pt, Đậm), Nội dung (13pt, Thường)
 - Căn lề chuẩn: Trên 2cm, Dưới 2cm, Trái 3cm, Phải 1.5cm
 - Tiêu ngữ Quốc hiệu & Tên cơ quan Công an xã An Viễn
@@ -17,24 +18,11 @@ from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
-
-def set_cell_margins(cell, top=100, bottom=100, left=150, right=150):
-    """Thiết lập padding lề cho cell bảng"""
-    tc = cell._tc
-    tcPr = tc.get_or_add_tcPr()
-    tcMar = OxmlElement('w:tcMar')
-    for m_name, m_val in [('top', top), ('bottom', bottom), ('left', left), ('right', right)]:
-        node = OxmlElement(f'w:{m_name}')
-        node.set(qn('w:w'), str(m_val))
-        node.set(qn('w:type'), 'dxa')
-        tcMar.append(node)
-    tcPr.append(tcMar)
 
 def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = "Phieu_Huong_Dan") -> bytes:
     """
     Chuyển đổi văn bản hướng dẫn Markdown thành file Word (.docx) chuẩn Nghị định 30/2020/NĐ-CP
+    Tất cả chữ 100% màu Đen thuần túy (Pure Black)
     """
     doc = Document()
 
@@ -46,11 +34,11 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
         s.left_margin = Inches(1.18)    # ~3.0 cm
         s.right_margin = Inches(0.59)   # ~1.5 cm
 
-    # 2. Cấu hình Style Mặc định (Times New Roman, 13pt)
+    # 2. Cấu hình Style Mặc định (Times New Roman, 13pt, Đen thuần túy #000000)
     normal_style = doc.styles['Normal']
     normal_style.font.name = 'Times New Roman'
     normal_style.font.size = Pt(13)
-    normal_style.font.color.rgb = RGBColor(15, 23, 42)  # Dark slate blue
+    normal_style.font.color.rgb = RGBColor(0, 0, 0)  # Pure Black
 
     # 3. Tạo Quốc hiệu & Tên Cơ quan (Bảng 2 cột ẩn viền)
     table = doc.add_table(rows=1, cols=2)
@@ -65,15 +53,18 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
     r_l1 = p_l1.add_run("CÔNG AN TỈNH ĐỒNG NAI\n")
     r_l1.font.name = "Times New Roman"
     r_l1.font.size = Pt(11)
+    r_l1.font.color.rgb = RGBColor(0, 0, 0)
     
     r_l2 = p_l1.add_run("CÔNG AN XÃ AN VIỄN\n")
     r_l2.font.name = "Times New Roman"
     r_l2.font.size = Pt(11)
     r_l2.font.bold = True
+    r_l2.font.color.rgb = RGBColor(0, 0, 0)
 
     r_l3 = p_l1.add_run("________")
     r_l3.font.name = "Times New Roman"
     r_l3.font.size = Pt(10)
+    r_l3.font.color.rgb = RGBColor(0, 0, 0)
 
     # Cột phải: CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM / Độc lập - Tự do - Hạnh phúc
     cell_right = table.cell(0, 1)
@@ -84,26 +75,29 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
     r_r1.font.name = "Times New Roman"
     r_r1.font.size = Pt(11)
     r_r1.font.bold = True
+    r_r1.font.color.rgb = RGBColor(0, 0, 0)
 
     r_r2 = p_r1.add_run("Độc lập - Tự do - Hạnh phúc\n")
     r_r2.font.name = "Times New Roman"
     r_r2.font.size = Pt(12)
     r_r2.font.bold = True
+    r_r2.font.color.rgb = RGBColor(0, 0, 0)
 
     r_r3 = p_r1.add_run("____________________")
     r_r3.font.name = "Times New Roman"
     r_r3.font.size = Pt(10)
+    r_r3.font.color.rgb = RGBColor(0, 0, 0)
 
     doc.add_paragraph()  # Khoảng trống
 
-    # 4. Tên Loại Văn bản & Tiêu đề
+    # 4. Tên Loại Văn bản & Tiêu đề (Đen thuần túy)
     p_title = doc.add_paragraph()
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_t = p_title.add_run("PHIẾU HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH\n")
     r_t.font.name = "Times New Roman"
     r_t.font.size = Pt(15)
     r_t.font.bold = True
-    r_t.font.color.rgb = RGBColor(11, 83, 148)  # Deep Navy Blue
+    r_t.font.color.rgb = RGBColor(0, 0, 0)  # Pure Black
 
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -111,7 +105,7 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
     r_sub.font.name = "Times New Roman"
     r_sub.font.size = Pt(11)
     r_sub.font.italic = True
-    r_sub.font.color.rgb = RGBColor(100, 116, 139)
+    r_sub.font.color.rgb = RGBColor(0, 0, 0)  # Pure Black
 
     doc.add_paragraph()  # Khoảng trống
 
@@ -124,7 +118,7 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
 
         # Loại bỏ các ký tự Markdown thừa như ###, **, *, #
         if stripped.startswith('#'):
-            # Tiêu đề mục (Heading)
+            # Tiêu đề mục (Heading) - Đen thuần túy
             clean_head = re.sub(r'^[#\s]+', '', stripped).replace('**', '')
             p_h = doc.add_paragraph()
             p_h.paragraph_format.space_before = Pt(10)
@@ -133,7 +127,7 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
             r_h.font.name = "Times New Roman"
             r_h.font.size = Pt(13)
             r_h.font.bold = True
-            r_h.font.color.rgb = RGBColor(11, 83, 148)
+            r_h.font.color.rgb = RGBColor(0, 0, 0)  # Pure Black
         elif stripped.startswith(('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.')):
             # Mục lớn
             clean_sec = stripped.replace('**', '')
@@ -144,6 +138,7 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
             r_s.font.name = "Times New Roman"
             r_s.font.size = Pt(13)
             r_s.font.bold = True
+            r_s.font.color.rgb = RGBColor(0, 0, 0)
         elif stripped.startswith(('-', '*', '•')):
             # Gạch đầu dòng
             clean_bullet = re.sub(r'^[-*•\s]+', '', stripped).replace('**', '')
@@ -153,6 +148,7 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
             r_b = p_b.add_run(clean_bullet)
             r_b.font.name = "Times New Roman"
             r_b.font.size = Pt(13)
+            r_b.font.color.rgb = RGBColor(0, 0, 0)
         else:
             # Đoạn văn bản thường
             clean_text = stripped.replace('**', '')
@@ -163,6 +159,7 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
             r_t = p_t.add_run(clean_text)
             r_t.font.name = "Times New Roman"
             r_t.font.size = Pt(13)
+            r_t.font.color.rgb = RGBColor(0, 0, 0)
 
     doc.add_paragraph()  # Khoảng trống
 
@@ -179,10 +176,13 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
     r_sl1.font.size = Pt(10)
     r_sl1.font.bold = True
     r_sl1.font.italic = True
+    r_sl1.font.color.rgb = RGBColor(0, 0, 0)
+
     r_sl2 = p_sl.add_run("- Người yêu cầu;\n- Lưu: HS, HĐC.")
     r_sl2.font.name = "Times New Roman"
     r_sl2.font.size = Pt(10)
     r_sl2.font.italic = True
+    r_sl2.font.color.rgb = RGBColor(0, 0, 0)
 
     cell_sig_r = table_sig.cell(0, 1)
     cell_sig_r.width = Inches(3.5)
@@ -192,10 +192,13 @@ def create_legal_docx(title: str, content_markdown: str, filename_prefix: str = 
     r_sr1.font.name = "Times New Roman"
     r_sr1.font.size = Pt(12)
     r_sr1.font.bold = True
+    r_sr1.font.color.rgb = RGBColor(0, 0, 0)
+
     r_sr2 = p_sr.add_run("(Hệ thống duyệt và cấp tự động)\n\n\n")
     r_sr2.font.name = "Times New Roman"
     r_sr2.font.size = Pt(10)
     r_sr2.font.italic = True
+    r_sr2.font.color.rgb = RGBColor(0, 0, 0)
 
     # 7. Xuất Stream Bộ nhớ Bytes
     target_stream = io.BytesIO()
