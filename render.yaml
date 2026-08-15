@@ -3,7 +3,7 @@ services:
     name: rag-chatbot-ca-an-vien
     env: python
     buildCommand: pip install -r requirements.txt && python build_kb_collection.py
-    startCommand: gunicorn app:app
+    startCommand: gunicorn --workers 1 --threads 2 --timeout 120 app:app
     envVars:
       - key: GEMINI_API_KEY
         sync: false

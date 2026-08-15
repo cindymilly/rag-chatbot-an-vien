@@ -5,8 +5,22 @@ Module quản lý Embedding Model cho hệ thống Hybrid Adaptive Correct RAG.
 Mặc định dùng model tiếng Việt: bkai-foundation-models/vietnamese-bi-encoder
 """
 
+import os
 import sys
 from typing import List
+
+# Giới hạn bộ nhớ và số luồng của PyTorch / OpenMP cho môi trường 512MB RAM
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
+try:
+    import torch
+    torch.set_num_threads(1)
+except Exception:
+    pass
 
 _MODEL = None
 _MODEL_NAME = "bkai-foundation-models/vietnamese-bi-encoder"
