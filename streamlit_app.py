@@ -69,13 +69,13 @@ st.markdown("""
         line-height: 1.6;
     }
     .officer-card {
-        background-color: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-left: 3px solid #0b5394;
-        padding: 10px 14px;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-left: 4px solid #0b5394 !important;
+        padding: 12px 14px;
         border-radius: 4px;
         margin-bottom: 8px;
-        font-size: 0.85rem;
+        color: #0f172a !important;
     }
     .stButton>button {
         background-color: #f1f5f9;
@@ -97,15 +97,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# THANH BÊN (SIDEBAR) - TÍNH NĂNG NÂNG CAO
+# THANH BÊN (SIDEBAR) - KHÔNG EMOJI
 # -----------------------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### 🏛️ CÔNG AN XÃ AN VIỄN")
+    st.markdown("### CÔNG AN XÃ AN VIỄN")
     st.markdown("**Trực ban 24/24:** `02513.538.187`")
     st.divider()
 
     # 1. BỘ LỌC TRA CỨU CÁN BỘ PHỤ TRÁCH THEO ẤP
-    st.markdown("### 👤 Cán Bộ Phụ Trách Theo Địa Bàn")
+    st.markdown("### Cán Bộ Phụ Trách Theo Địa Bàn")
     selected_ap = st.selectbox(
         "Chọn địa bàn Ấp để tra cứu:",
         ["Tất cả địa bàn", "Ấp An Phú", "Ấp Phát Đạt", "Ấp Hưng Thịnh"]
@@ -124,16 +124,16 @@ with st.sidebar:
     for c in filtered_contacts[:4]:
         st.markdown(f"""
         <div class="officer-card">
-            <strong>{c['title']} - {c['name']}</strong><br/>
-            <span>SĐT: <strong>{c['phone']}</strong></span><br/>
-            <span style="color: #64748b; font-size: 0.8rem;">Phụ trách: {c['role']}</span>
+            <strong style="color: #0b5394 !important; font-weight: bold; font-size: 0.9rem;">{c['title']} - {c['name']}</strong><br/>
+            <span style="color: #1e293b !important; font-size: 0.85rem;">SĐT: <strong style="color: #0f172a !important;">{c['phone']}</strong></span><br/>
+            <span style="color: #475569 !important; font-size: 0.8rem;">Phụ trách: {c['role']}</span>
         </div>
         """, unsafe_allow_html=True)
 
     st.divider()
 
     # 2. DANH SÁCH MẪU ĐƠN HÀNH CHÍNH
-    st.markdown("### 📄 Tải Mẫu Đơn Hành Chính")
+    st.markdown("### Tải Mẫu Đơn Hành Chính")
     
     st.markdown("**Mẫu CT01 - Tờ khai Cư trú**")
     st.caption("Tờ khai thay đổi thông tin cư trú (Đăng ký thường trú, tạm trú)")
@@ -218,7 +218,7 @@ Thông tin liên hệ hỗ trợ:
 - Số điện thoại khẩn cấp: 113 (An ninh trật tự), 114 (PCCC & CNCH)
 """
             st.download_button(
-                "📥 In / Tải Phiếu Hướng Dẫn (.txt)",
+                "In / Tải Phiếu Hướng Dẫn (.txt)",
                 data=phieu_content,
                 file_name=f"Phieu_Huong_Dan_Thu_Tuc_{idx}.txt",
                 key=f"dl_{idx}"
@@ -290,7 +290,7 @@ Thông tin liên hệ hỗ trợ:
 - Số điện thoại khẩn cấp: 113 (An ninh trật tự), 114 (PCCC & CNCH)
 """
         st.download_button(
-            "📥 In / Tải Phiếu Hướng Dẫn (.txt)",
+            "In / Tải Phiếu Hướng Dẫn (.txt)",
             data=phieu_content,
             file_name=f"Phieu_Huong_Dan_Thu_Tuc_moi.txt",
             key="dl_new"
