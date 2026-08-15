@@ -104,31 +104,44 @@ with st.sidebar:
     st.markdown("**Trực ban 24/24:** `02513.538.187`")
     st.divider()
 
-    # 1. BỘ LỌC TRA CỨU CÁN BỘ PHỤ TRÁCH THEO ẤP
+    # 1. BỘ LỌC TRA CỨU CÁN BỘ PHỤ TRÁCH THEO ĐỊA BÀN
     st.markdown("### Cán Bộ Phụ Trách Theo Địa Bàn")
     selected_ap = st.selectbox(
-        "Chọn địa bàn Ấp để tra cứu:",
-        ["Tất cả địa bàn", "Ấp An Phú", "Ấp Phát Đạt", "Ấp Hưng Thịnh"]
+        "Chọn đơn vị / địa bàn tra cứu:",
+        [
+            "Tất cả cán bộ & Ban chỉ chỉ huy",
+            "Ban Chỉ huy Công an xã",
+            "Ấp An Phú",
+            "Ấp Phát Đạt",
+            "Ấp Hưng Thịnh",
+            "Cán bộ Chuyên môn & Hộ tịch"
+        ]
     )
 
     graph = get_graph_index()
     all_contacts = graph.contacts
 
     filtered_contacts = all_contacts
-    if selected_ap != "Tất cả địa bàn":
-        filtered_contacts = [
-            c for c in all_contacts 
-            if selected_ap.lower() in c.get("role", "").lower() or selected_ap.lower() in c.get("title", "").lower() or selected_ap.lower() in c.get("area", "").lower()
-        ]
+    if selected_ap == "Ban Chỉ huy Công an xã":
+        filtered_contacts = [c for c in all_contacts if "Trưởng" in c.get("title", "") or "Chỉ huy" in c.get("role", "")]
+    elif selected_ap == "Ấp An Phú":
+        filtered_contacts = [c for c in all_contacts if "An Phú" in c.get("role", "") or "An Phú" in c.get("title", "")]
+    elif selected_ap == "Ấp Phát Đạt":
+        filtered_contacts = [c for c in all_contacts if "Phát Đạt" in c.get("role", "") or "Phát Đạt" in c.get("title", "")]
+    elif selected_ap == "Ấp Hưng Thịnh":
+        filtered_contacts = [c for c in all_contacts if "Hưng Thịnh" in c.get("role", "") or "Hưng Thịnh" in c.get("title", "")]
+    elif selected_ap == "Cán bộ Chuyên môn & Hộ tịch":
+        filtered_contacts = [c for c in all_contacts if "Trưởng" not in c.get("title", "") and "Ấp" not in c.get("role", "")]
 
-    for c in filtered_contacts[:4]:
-        st.markdown(f"""
-        <div class="officer-card">
-            <strong style="color: #0b5394 !important; font-weight: bold; font-size: 0.9rem;">{c['title']} - {c['name']}</strong><br/>
-            <span style="color: #1e293b !important; font-size: 0.85rem;">SĐT: <strong style="color: #0f172a !important;">{c['phone']}</strong></span><br/>
-            <span style="color: #475569 !important; font-size: 0.8rem;">Phụ trách: {c['role']}</span>
-        </div>
-        """, unsafe_allow_html=True)
+    with st.container(height=320):
+        for c in filtered_contacts:
+            st.markdown(f"""
+            <div class="officer-card">
+                <strong style="color: #0b5394 !important; font-weight: bold; font-size: 0.9rem;">{c['title']} - {c['name']}</strong><br/>
+                <span style="color: #1e293b !important; font-size: 0.85rem;">SĐT: <strong style="color: #0f172a !important;">{c['phone']}</strong></span><br/>
+                <span style="color: #475569 !important; font-size: 0.8rem;">Phụ trách: {c['role']}</span>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.divider()
 
