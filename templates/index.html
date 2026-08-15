@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Thông Tin Hướng Dẫn Thủ Tục Hành Chính - Công An Xã An Viễn</title>
+    <!-- Google Fonts Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0b5394;
+            --secondary-color: #f1f5f9;
+            --text-color: #1e293b;
+            --light-text: #64748b;
+            --border-color: #cbd5e1;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #eef2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--text-color);
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 920px;
+            height: 94vh;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #073863;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .emblem {
+            width: 44px;
+            height: 44px;
+            background: #d9b310;
+            color: #073863;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.15rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .header-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            margin-top: 2px;
+        }
+
+        .header-subtitle {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            background-color: #f8fafc;
+        }
+
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 85%;
+        }
+
+        .message-row.user {
+            align-self: flex-end;
+        }
+
+        .message-row.bot {
+            align-self: flex-start;
+        }
+
+        .msg-bubble {
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .msg-bubble.user {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-right: 4px solid #073863;
+        }
+
+        .msg-bubble.bot {
+            background-color: var(--white);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+        }
+
+        .msg-bubble.bot ul, .msg-bubble.bot ol {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .msg-bubble.bot p {
+            margin-bottom: 8px;
+        }
+        .msg-bubble.bot p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Step Monitor */
+        .step-monitor {
+            background: #f1f5f9;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-left: 3px solid var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .step-item {
+            color: var(--light-text);
+        }
+
+        .step-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .step-item.err {
+            color: #dc2626;
+        }
+
+        /* Quick Questions */
+        .quick-questions {
+            display: flex;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--white);
+            border-top: 1px solid var(--border-color);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .q-chip {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .q-chip:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        /* Input Form */
+        .input-form {
+            padding: 16px 24px;
+            background: var(--white);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-form input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .input-form input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .input-form button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .input-form button:hover {
+            background-color: #073863;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="header-left">
+            <div class="emblem">CA</div>
+            <div class="header-title">
+                <h1>CỔNG THÔNG TIN HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH - CÔNG AN XÃ AN VIỄN</h1>
+                <p>Thành phố Đồng Nai | Trực ban: 02513.538.187</p>
+            </div>
+        </div>
+        <div class="header-subtitle">
+            Hệ thống Tra cứu Hành chính Công
+        </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chatMessages">
+        <div class="message-row bot">
+            <div class="msg-bubble bot">
+                <p><strong>Kính chào Anh/chị và Bà con nhân dân xã An Viễn!</strong></p>
+                <p>Đây là Trang thông tin và hướng dẫn tự động về các Thủ tục hành chính thuộc thẩm quyền giải quyết của Công an xã An Viễn (Cư trú, Căn cước VNeID, Đăng ký xe, PCCC & CNCH, Trích lục hộ tịch, Tuyển quân & Tuyển sinh CAND).</p>
+                <p>Anh/chị vui lòng chọn hoặc nhập nội dung cần hướng dẫn bên dưới.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Questions -->
+    <div class="quick-questions">
+        <div class="q-chip" onclick="sendChip('Thủ tục đăng ký tạm trú qua VNeID thực hiện như thế nào?')">Đăng ký tạm trú VNeID</div>
+        <div class="q-chip" onclick="sendChip('Thủ tục sang tên xe máy và cấp lại biển số xe?')">Đăng ký sang tên xe</div>
+        <div class="q-chip" onclick="sendChip('Hướng dẫn kiểm tra an toàn PCCC nhà trọ và số điện thoại báo cháy?')">An toàn PCCC nhà trọ</div>
+        <div class="q-chip" onclick="sendChip('Trình tự xin trích lục hộ tịch trên Cổng Dịch vụ công?')">Trích lục Hộ tịch DVC</div>
+        <div class="q-chip" onclick="sendChip('Tiêu chuẩn và hồ sơ đăng ký tuyển sinh các trường Công an nhân dân?')">Tuyển sinh CAND</div>
+        <div class="q-chip" onclick="sendChip('Số điện thoại trực ban Công an xã An Viễn?')">SĐT Trực ban Công an xã</div>
+    </div>
+
+    <!-- Input Form -->
+    <div class="input-form">
+        <input type="text" id="userInput" placeholder="Nhập nội dung cần hỗ trợ hướng dẫn thủ tục..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Gửi yêu cầu</button>
+    </div>
+</div>
+
+<script>
+    const chatMessages = document.getElementById("chatMessages");
+    const userInput = document.getElementById("userInput");
+
+    function handleKeyPress(e) {
+        if (e.key === "Enter") sendMessage();
+    }
+
+    function sendChip(text) {
+        userInput.value = text;
+        sendMessage();
+    }
+
+    function appendUserMessage(text) {
+        const row = document.createElement("div");
+        row.className = "message-row user";
+        row.innerHTML = `<div class="msg-bubble user">${text}</div>`;
+        chatMessages.appendChild(row);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const query = userInput.value.trim();
+        if (!query) return;
+
+        appendUserMessage(query);
+        userInput.value = "";
+
+        const botRow = document.createElement("div");
+        botRow.className = "message-row bot";
+        
+        const stepsDiv = document.createElement("div");
+        stepsDiv.className = "step-monitor";
+        stepsDiv.innerHTML = `<div class="step-item active">Đang tiếp nhận và kiểm tra hệ thống...</div>`;
+        
+        const ansBubble = document.createElement("div");
+        ansBubble.className = "msg-bubble bot";
+        ansBubble.style.display = "none";
+        
+        botRow.appendChild(stepsDiv);
+        botRow.appendChild(ansBubble);
+        chatMessages.appendChild(botRow);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        try {
+            const response = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: query })
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                
+                const lines = buffer.split("\n\n");
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine.startsWith("data: ")) {
+                        const dataJson = JSON.parse(trimmedLine.substring(6));
+                        
+                        if (!dataJson.is_final) {
+                            const stepItem = document.createElement("div");
+                            stepItem.className = "step-item active";
+                            stepItem.textContent = dataJson.message;
+                            stepsDiv.appendChild(stepItem);
+                        } else {
+                            stepsDiv.style.display = "none";
+                            ansBubble.style.display = "block";
+                            ansBubble.innerHTML = marked.parse(dataJson.message);
+                        }
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                }
+            }
+        } catch (err) {
+            stepsDiv.innerHTML += `<div class="step-item err">Lỗi kết nối: ${err.message}</div>`;
+        }
+    }
+</script>
+
+</body>
+</html>

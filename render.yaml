@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: rag-chatbot-ca-an-vien
+    env: python
+    buildCommand: pip install -r requirements.txt && python build_kb_collection.py
+    startCommand: gunicorn app:app
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false

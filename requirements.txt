@@ -1,0 +1,9 @@
+flask
+google-genai
+sentence-transformers
+chromadb
+pypdf
+pymupdf
+python-docx
+python-pptx
+gunicorn
