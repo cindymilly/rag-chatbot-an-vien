@@ -3,34 +3,15 @@
 ## 1. Giới thiệu Tổng quan
 Hệ thống Cổng thông tin tri thức và hỗ trợ giải đáp thủ tục hành chính công trực tuyến thuộc quản lý chuyên môn của **Công an xã An Viễn, thành phố Đồng Nai**.
 
+![Giao diện Cổng thông tin Hướng dẫn Thủ tục Hành chính Công an xã An Viễn](docs/images/portal_interface_preview.svg)
+
 Hệ thống được xây dựng nhằm mục đích nâng cao hiệu quả công tác tiếp công dân, hướng dẫn công khai, minh bạch các trình tự, thủ tục hành chính thuộc thẩm quyền giải quyết của lực lượng Công an cấp xã, hỗ trợ người dân thực hiện các thủ tục trên môi trường điện tử (Cổng Dịch vụ công Bộ Công an, Cổng Dịch vụ công Quốc gia, Ứng dụng VNeID).
 
 ---
 
 ## 2. Kiến trúc Hệ thống Xử lý Dữ liệu
 
-```text
-[Yêu cầu từ Công dân]
-         │
-         ▼
-[Bộ Phân Tách Nội Dung & Phân Loại Ý Định]
-         │
-         ├────────────────────────────────────────┐
-         ▼                                        ▼
-[Cơ Sở Dữ Liệu Vector ChromaDB]          [Chỉ Mục Thực Thể & Danh Bạ Nghiệp Vụ]
-(1.827 Khối Tri Thức Quy Chuẩn)          (15 Cán Bộ, Hotlines & Đơn Vị Tiếp Nhận)
-         │                                        │
-         └───────────────────┬────────────────────┘
-                             │
-                             ▼
-              [Bộ Đánh Giá Độ Hợp Quy Pháp Lý]
-                             │
-                             ▼
-            [Tổng Hợp Văn Bản Trả Lời Chính Thức]
-                             │
-                             ▼
-                   [Kết Quả Hướng Dẫn]
-```
+![Sơ đồ Kiến trúc Hệ thống Xử lý Tri thức Hành chính Công](docs/images/architecture_diagram.svg)
 
 - **Mô hình nhúng văn bản (Embedding Model)**: Sử dụng mô hình xử lý ngôn ngữ tiếng Việt chuyên dụng `bkai-foundation-models/vietnamese-bi-encoder`.
 - **Cơ sở dữ liệu Vector (Vector Database)**: Lưu trữ và tìm kiếm theo thuật toán k-NN trên bộ dữ liệu 1.827 khối tri thức nghiệp vụ đã được chuẩn hóa.

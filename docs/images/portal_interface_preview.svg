@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="100%" height="100%">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b5394" />
+      <stop offset="100%" stop-color="#073863" />
+    </linearGradient>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="650" fill="#eef2f5"/>
+
+  <!-- Main Container -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="25" width="900" height="600" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+
+    <!-- Header -->
+    <rect x="50" y="25" width="900" height="70" rx="8" fill="url(#headerGrad)"/>
+    <circle cx="85" cy="60" r="20" fill="#d9b310"/>
+    <text x="85" y="65" font-family="Roboto, Arial, sans-serif" font-size="14" font-weight="bold" fill="#073863" text-anchor="middle">CA</text>
+    
+    <text x="120" y="52" font-family="Roboto, Arial, sans-serif" font-size="15" font-weight="bold" fill="#ffffff">CỔNG THÔNG TIN HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH - CÔNG AN XÃ AN VIỄN</text>
+    <text x="120" y="70" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#cbd5e1">Thành phố Đồng Nai | Trực ban: 02513.538.187</text>
+
+    <rect x="740" y="47" width="190" height="26" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)"/>
+    <text x="835" y="64" font-family="Roboto, Arial, sans-serif" font-size="10" fill="#ffffff" text-anchor="middle">Hệ thống Tra cứu Hành chính Công</text>
+
+    <!-- Chat Messages Area -->
+    <rect x="50" y="95" width="900" height="420" fill="#f8fafc"/>
+
+    <!-- Bot Welcome Message -->
+    <rect x="75" y="115" width="700" height="95" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    <rect x="75" y="115" width="4" height="95" fill="#0b5394"/>
+    <text x="95" y="138" font-family="Roboto, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">Kính chào Anh/chị và Bà con nhân dân xã An Viễn!</text>
+    <text x="95" y="158" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#1e293b">Đây là Trang thông tin và hướng dẫn tự động về các Thủ tục hành chính thuộc thẩm quyền giải quyết</text>
+    <text x="95" y="174" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#1e293b">của Công an xã An Viễn (Cư trú, Căn cước VNeID, Đăng ký xe, PCCC &amp; CNCH, Trích lục hộ tịch, Tuyển quân CAND).</text>
+    <text x="95" y="194" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#64748b">Anh/chị vui lòng chọn hoặc nhập nội dung cần hướng dẫn bên dưới.</text>
+
+    <!-- User Question Bubble -->
+    <rect x="475" y="225" width="450" height="40" rx="6" fill="#0b5394"/>
+    <text x="905" y="250" font-family="Roboto, Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="end">Thủ tục sang tên xe máy và cấp lại biển số xe?</text>
+
+    <!-- Bot Response Bubble -->
+    <rect x="75" y="280" width="850" height="220" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    <rect x="75" y="280" width="4" height="220" fill="#0b5394"/>
+    <text x="95" y="305" font-family="Roboto, Arial, sans-serif" font-size="12" font-weight="bold" fill="#0b5394">HƯỚNG DẪN THỦ TỤC SANG TÊN XE MÁY VÀ CẤP ĐỔI/CẤP LẠI BIỂN SỐ XE</text>
+    
+    <text x="95" y="330" font-family="Roboto, Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e293b">1. Thành phần hồ sơ cần chuẩn bị:</text>
+    <text x="110" y="348" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#334155">- Giấy khai đăng ký xe (Mẫu MĐ01 nộp trực tuyến trên Cổng Dịch vụ công Bộ Công an).</text>
+    <text x="110" y="364" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#334155">- Chứng nhận thu hồi đăng ký, biển số xe (do chủ cũ làm thủ tục thu hồi).</text>
+    <text x="110" y="380" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#334155">- Hợp đồng mua bán/chuyển nhượng có công chứng hoặc chứng thực.</text>
+
+    <text x="95" y="405" font-family="Roboto, Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e293b">2. Trình tự các bước thực hiện:</text>
+    <text x="110" y="423" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#334155">Bước 1: Nộp hồ sơ dịch vụ công trực tuyến ➔ Bước 2: Mang xe và hồ sơ đến Bộ phận tiếp nhận Công an xã An Viễn.</text>
+
+    <text x="95" y="450" font-family="Roboto, Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e293b">3. Bộ phận tiếp nhận &amp; Cán bộ phụ trách:</text>
+    <text x="110" y="468" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#0b5394">Cán bộ phụ trách: Đại úy Nguyễn Văn A - SĐT: 0988.xxx.xxx | Trực ban Công an xã: 02513.538.187</text>
+
+    <!-- Quick Chips -->
+    <rect x="50" y="515" width="900" height="45" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    <rect x="65" y="525" width="130" height="26" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="130" y="542" font-family="Roboto, Arial, sans-serif" font-size="10" fill="#0b5394" text-anchor="middle">Đăng ký tạm trú VNeID</text>
+
+    <rect x="205" y="525" width="130" height="26" rx="4" fill="#0b5394"/>
+    <text x="270" y="542" font-family="Roboto, Arial, sans-serif" font-size="10" fill="#ffffff" text-anchor="middle">Đăng ký sang tên xe</text>
+
+    <rect x="345" y="525" width="140" height="26" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="415" y="542" font-family="Roboto, Arial, sans-serif" font-size="10" fill="#0b5394" text-anchor="middle">An toàn PCCC nhà trọ</text>
+
+    <rect x="495" y="525" width="140" height="26" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="565" y="542" font-family="Roboto, Arial, sans-serif" font-size="10" fill="#0b5394" text-anchor="middle">Trích lục Hộ tịch DVC</text>
+
+    <rect x="645" y="525" width="130" height="26" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="710" y="542" font-family="Roboto, Arial, sans-serif" font-size="10" fill="#0b5394" text-anchor="middle">Tuyển sinh CAND</text>
+
+    <rect x="785" y="525" width="150" height="26" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="860" y="542" font-family="Roboto, Arial, sans-serif" font-size="10" fill="#0b5394" text-anchor="middle">SĐT Trực ban Công an xã</text>
+
+    <!-- Input Bar -->
+    <rect x="50" y="560" width="900" height="65" fill="#ffffff"/>
+    <rect x="65" y="573" width="730" height="40" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="80" y="598" font-family="Roboto, Arial, sans-serif" font-size="11" fill="#94a3b8">Nhập nội dung cần hỗ trợ hướng dẫn thủ tục...</text>
+
+    <rect x="805" y="573" width="130" height="40" rx="4" fill="#0b5394"/>
+    <text x="870" y="598" font-family="Roboto, Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Gửi yêu cầu</text>
+  </g>
+</svg>
