@@ -1,13 +1,17 @@
 """
 streamlit_app.py
 ----------------
-Ứng dụng Web Streamlit cho Cổng Thông Tin Hướng Dẫn Thủ Tục Hành Chính - Công An Xã An Viễn.
-Triển khai miễn phí 24/7 trên Streamlit Community Cloud.
+Cổng Thông Tin Hướng Dẫn Thủ Tục Hành Chính - Công An Xã An Viễn
+Tích hợp các tính năng nâng cao:
+1. Bộ lọc tra cứu Cán bộ Công an phụ trách theo từng Ấp
+2. Thanh bên Tải Mẫu đơn Hành chính Công (CT01, CT07, MĐ01, PC01)
+3. Tải / In Phiếu Hướng dẫn Thủ tục Hành chính chính thức (Format văn bản hành chính)
 """
 
 import os
 import sys
 import time
+from datetime import datetime
 import streamlit as st
 
 # Thiết lập API Key từ Streamlit Secrets hoặc Môi trường
@@ -19,16 +23,17 @@ except Exception:
 
 from chatbot import analyze_query, check_context_relevance, get_llm_response
 from query import answer_query
+from graph_index import get_graph_index
 
 # Cấu hình Trang Streamlit
 st.set_page_config(
     page_title="Cổng Thông Tin Hướng Dẫn Thủ Tục Hành Chính - Công An Xã An Viễn",
     page_icon="🏛️",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# Custom CSS giao diện Xanh Navy Công an Nhân dân (Không emoji/AI)
+# Custom CSS giao diện Xanh Navy Công an Nhân dân chuẩn mực (Không emoji/AI)
 st.markdown("""
 <style>
     .main-header {
@@ -41,7 +46,7 @@ st.markdown("""
     }
     .main-header h1 {
         color: #ffffff;
-        font-size: 1.3rem;
+        font-size: 1.35rem;
         font-weight: 700;
         margin: 0;
         text-transform: uppercase;
@@ -63,6 +68,15 @@ st.markdown("""
         font-size: 0.95rem;
         line-height: 1.6;
     }
+    .officer-card {
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-left: 3px solid #0b5394;
+        padding: 10px 14px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        font-size: 0.85rem;
+    }
     .stButton>button {
         background-color: #f1f5f9;
         color: #0b5394;
@@ -71,6 +85,7 @@ st.markdown("""
         font-size: 0.85rem;
         font-weight: 500;
         padding: 6px 14px;
+        width: 100%;
         transition: all 0.2s;
     }
     .stButton>button:hover {
@@ -78,19 +93,66 @@ st.markdown("""
         color: #ffffff;
         border-color: #0b5394;
     }
-    .status-box {
-        background-color: #f8fafc;
-        border: 1px stroke #e2e8f0;
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-size: 0.85rem;
-        color: #64748b;
-        margin-bottom: 8px;
-    }
 </style>
 """, unsafe_allow_html=True)
 
-# Header
+# -----------------------------------------------------------------------------
+# THANH BÊN (SIDEBAR) - TÍNH NĂNG NÂNG CAO
+# -----------------------------------------------------------------------------
+with st.sidebar:
+    st.markdown("### 🏛️ CÔNG AN XÃ AN VIỄN")
+    st.markdown("**Trực ban 24/24:** `02513.538.187`")
+    st.divider()
+
+    # 1. BỘ LỌC TRA CỨU CÁN BỘ PHỤ TRÁCH THEO ẤP
+    st.markdown("### 👤 Cán Bộ Phụ Trách Theo Địa Bàn")
+    selected_ap = st.selectbox(
+        "Chọn địa bàn Ấp để tra cứu:",
+        ["Tất cả địa bàn", "Ấp An Phú", "Ấp Phát Đạt", "Ấp Hưng Thịnh"]
+    )
+
+    graph = get_graph_index()
+    all_contacts = graph.contacts
+
+    filtered_contacts = all_contacts
+    if selected_ap != "Tất cả địa bàn":
+        filtered_contacts = [
+            c for c in all_contacts 
+            if selected_ap.lower() in c.get("role", "").lower() or selected_ap.lower() in c.get("title", "").lower() or selected_ap.lower() in c.get("area", "").lower()
+        ]
+
+    for c in filtered_contacts[:4]:
+        st.markdown(f"""
+        <div class="officer-card">
+            <strong>{c['title']} - {c['name']}</strong><br/>
+            <span>SĐT: <strong>{c['phone']}</strong></span><br/>
+            <span style="color: #64748b; font-size: 0.8rem;">Phụ trách: {c['role']}</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # 2. DANH SÁCH MẪU ĐƠN HÀNH CHÍNH
+    st.markdown("### 📄 Tải Mẫu Đơn Hành Chính")
+    
+    st.markdown("**Mẫu CT01 - Tờ khai Cư trú**")
+    st.caption("Tờ khai thay đổi thông tin cư trú (Đăng ký thường trú, tạm trú)")
+    ct01_text = """CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nTỜ KHAI THAY ĐỔI THÔNG TIN CƯ TRÚ (Mẫu CT01)\nKính gửi: Công an xã An Viễn, thành phố Đồng Nai\n\n1. Họ và tên: ........................................................\n2. Ngày, tháng, năm sinh: ....../....../............ Sex: ..........\n3. Số định danh cá nhân/CCCD: .......................................\n4. Số điện thoại liên hệ: .............................................\n5. Nơi thường trú hiện tại: ...........................................\n6. Nơi tạm trú/Nơi ở hiện tại: ........................................\n7. Nội dung đề nghị: .................................................\n(Ví dụ: Đăng ký thường trú / Đăng ký tạm trú / Khai báo tạm vắng)\n\nAn Viễn, ngày ...... tháng ...... năm 202...\nNgười kê khai (Ký, ghi rõ họ tên)"""
+    st.download_button("Tải Mẫu CT01 (.txt)", data=ct01_text, file_name="Mau_CT01_To_Khai_Cu_Tru.txt", mime="text/plain")
+
+    st.markdown("**Mẫu CT07 - Giấy Xác Nhận Cư Trú**")
+    st.caption("Đơn xin cấp xác nhận thông tin về cư trú")
+    ct07_text = """CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nĐƠN XIN CẤP GIẤY XÁC NHẬN THÔNG TIN VỀ CƯ TRÚ (Mẫu CT07)\nKính gửi: Công an xã An Viễn, thành phố Đồng Nai\n\nTôi tên là: ...........................................................\nSố CCCD: .......................... Ngày cấp: .......... Nơi cấp: .......\nĐịa chỉ thường trú: ....................................................\nYêu cầu cấp Giấy xác nhận thông tin về cư trú để làm thủ tục: .........\n\nAn Viễn, ngày ...... tháng ...... năm 202...\nNgười làm đơn"""
+    st.download_button("Tải Mẫu CT07 (.txt)", data=ct07_text, file_name="Mau_CT07_Xac_Nhan_Cu_Tru.txt", mime="text/plain")
+
+    st.markdown("**Mẫu MĐ01 - Khai Đăng Ký Xe**")
+    st.caption("Giấy khai đăng ký xe máy, ô tô")
+    md01_text = """CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nGIẤY KHAI ĐĂNG KÝ XE (Mẫu MĐ01)\nKính gửi: Công an xã An Viễn, thành phố Đồng Nai\n\nTên chủ xe: ...........................................................\nĐịa chỉ: ..............................................................\nSố CCCD: .............................................................\nNhãn hiệu xe: ................ Loại xe: .......... Màu sơn: ...........\nSố khung: .............................................................\nSố máy: ...............................................................\nLý do: (Đăng ký mới / Sang tên / Cấp lại biển số)\n\nAn Viễn, ngày ...... tháng ...... năm 202...\nChủ xe (Ký, ghi rõ họ tên)"""
+    st.download_button("Tải Mẫu MĐ01 (.txt)", data=md01_text, file_name="Mau_MD01_Dang_Ky_Xe.txt", mime="text/plain")
+
+# -----------------------------------------------------------------------------
+# PHẦN CHÍNH (MAIN CONTAINER)
+# -----------------------------------------------------------------------------
 st.markdown("""
 <div class="main-header">
     <h1>CỔNG THÔNG TIN HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH - CÔNG AN XÃ AN VIỄN</h1>
@@ -137,9 +199,30 @@ with col3:
 st.divider()
 
 # Hiển thị Lịch sử Trò chuyện
-for message in st.session_state.messages:
+for idx, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        # Nếu là câu trả lời của Trợ lý, cho phép Tải Phiếu Hướng Dẫn Hành Chính
+        if message["role"] == "assistant":
+            phieu_content = f"""CÔNG AN TỈNH ĐỒNG NAI             CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+CÔNG AN XÃ AN VIỄN                   Độc lập - Tự do - Hạnh phúc
+
+PHIẾU HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH
+Ngày khởi tạo: {datetime.now().strftime('%d/%m/%Y %H:%M')}
+Địa điểm: Công an xã An Viễn, thành phố Đồng Nai
+--------------------------------------------------------------------------------
+{message['content']}
+--------------------------------------------------------------------------------
+Thông tin liên hệ hỗ trợ:
+- Trực ban Công an xã An Viễn: 02513.538.187 (Trực 24/24)
+- Số điện thoại khẩn cấp: 113 (An ninh trật tự), 114 (PCCC & CNCH)
+"""
+            st.download_button(
+                "📥 In / Tải Phiếu Hướng Dẫn (.txt)",
+                data=phieu_content,
+                file_name=f"Phieu_Huong_Dan_Thu_Tuc_{idx}.txt",
+                key=f"dl_{idx}"
+            )
 
 # Ô Nhập câu hỏi từ người dùng
 user_input = st.chat_input("Nhập nội dung cần hỗ trợ hướng dẫn thủ tục...")
@@ -191,4 +274,26 @@ if prompt_to_process:
             status.update(label="Hoàn tất tra cứu", state="complete", expanded=False)
 
         st.markdown(llm_reply)
+        
+        # Tải Phiếu Hướng Dẫn Hành Chính
+        phieu_content = f"""CÔNG AN TỈNH ĐỒNG NAI             CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+CÔNG AN XÃ AN VIỄN                   Độc lập - Tự do - Hạnh phúc
+
+PHIẾU HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH
+Ngày khởi tạo: {datetime.now().strftime('%d/%m/%Y %H:%M')}
+Địa điểm: Công an xã An Viễn, thành phố Đồng Nai
+--------------------------------------------------------------------------------
+{llm_reply}
+--------------------------------------------------------------------------------
+Thông tin liên hệ hỗ trợ:
+- Trực ban Công an xã An Viễn: 02513.538.187 (Trực 24/24)
+- Số điện thoại khẩn cấp: 113 (An ninh trật tự), 114 (PCCC & CNCH)
+"""
+        st.download_button(
+            "📥 In / Tải Phiếu Hướng Dẫn (.txt)",
+            data=phieu_content,
+            file_name=f"Phieu_Huong_Dan_Thu_Tuc_moi.txt",
+            key="dl_new"
+        )
+        
         st.session_state.messages.append({"role": "assistant", "content": llm_reply})
