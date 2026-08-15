@@ -33,6 +33,35 @@ def get_genai_client():
     except Exception:
         return None
 
+MODEL_CANDIDATES = [
+    os.environ.get("GEMINI_MODEL_NAME", "gemini-3.1-flash-lite"),
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.6-flash"
+]
+
+def call_genai_with_fallback(client, contents):
+    """
+    Tự động chuyển đổi giữa các model khi một model dính giới hạn Rate Limit (429).
+    Ưu tiên gemini-3.1-flash-lite (Quota 500 lượt/ngày) -> gemini-3.5-flash-lite (500/ngày).
+    """
+    last_err = None
+    # Lọc bỏ trùng lặp giữ nguyên thứ tự
+    models_to_try = []
+    for m in MODEL_CANDIDATES:
+        if m and m not in models_to_try:
+            models_to_try.append(m)
+
+    for m in models_to_try:
+        try:
+            res = client.models.generate_content(model=m, contents=contents)
+            if res and res.text:
+                return res.text.strip()
+        except Exception as e:
+            last_err = e
+            continue
+    raise last_err if last_err else RuntimeError("Tất cả các mô hình AI đều không phản hồi.")
+
 def analyze_query(query: str) -> list[str]:
     """
     Query Analyzer & Reasoning Chain:
@@ -53,11 +82,8 @@ Câu hỏi gốc: "{query}"
 Danh sách câu hỏi con chuẩn hóa:
 """
     try:
-        response = client.models.generate_content(
-            model='gemini-3.6-flash',
-            contents=prompt
-        )
-        lines = [line.strip('-*• ').strip() for line in response.text.strip().split('\n') if line.strip()]
+        text = call_genai_with_fallback(client, prompt)
+        lines = [line.strip('-*• ').strip() for line in text.split('\n') if line.strip()]
         return lines if lines else [query]
     except Exception:
         return [query]
@@ -88,11 +114,7 @@ Nếu TÀI LIỆU hoàn toàn không liên quan hoặc thiếu thông tin cốt 
 Chỉ xuất đúng 1 từ YES hoặc NO.
 """
     try:
-        response = client.models.generate_content(
-            model='gemini-3.6-flash',
-            contents=prompt
-        )
-        ans = response.text.strip().upper()
+        ans = call_genai_with_fallback(client, prompt).upper()
         return "YES" in ans
     except Exception:
         return True
@@ -130,10 +152,6 @@ Hãy soạn câu trả lời đầy đủ, chi tiết, dễ hiểu và chuẩn x
 """
 
     try:
-        response = client.models.generate_content(
-            model='gemini-3.6-flash',
-            contents=prompt
-        )
-        return response.text.strip()
+        return call_genai_with_fallback(client, prompt)
     except Exception as e:
         return f"Rất tiếc, hệ thống gặp sự cố khi tổng hợp phản hồi: {str(e)}"
