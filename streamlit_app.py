@@ -4,8 +4,8 @@ streamlit_app.py
 Cổng Thông Tin Hướng Dẫn Thủ Tục Hành Chính - Công An Xã An Viễn
 Tích hợp các tính năng nâng cao:
 1. Bộ lọc tra cứu Cán bộ Công an phụ trách theo từng Ấp
-2. Thanh bên Tải Mẫu đơn Hành chính Công (CT01, CT07, MĐ01, PC01)
-3. Tải / In Phiếu Hướng dẫn Thủ tục Hành chính chính thức (Format văn bản hành chính)
+2. Thanh bên Tải Mẫu đơn Hành chính Công dạng Microsoft Word (.docx) chuẩn Nghị định 30/2020/NĐ-CP
+3. Tải / In Phiếu Hướng dẫn Thủ tục Hành chính chuẩn Microsoft Word (.docx) Times New Roman 13pt
 """
 
 import os
@@ -24,6 +24,7 @@ except Exception:
 from chatbot import analyze_query, check_context_relevance, get_llm_response
 from query import answer_query
 from graph_index import get_graph_index
+from docx_generator import create_legal_docx
 
 # Cấu hình Trang Streamlit
 st.set_page_config(
@@ -145,23 +146,54 @@ with st.sidebar:
 
     st.divider()
 
-    # 2. DANH SÁCH MẪU ĐƠN HÀNH CHÍNH
-    st.markdown("### Tải Mẫu Đơn Hành Chính")
+    # 2. DANH SÁCH MẪU ĐƠN HÀNH CHÍNH (FILE WORD .DOCX)
+    st.markdown("### Tải Mẫu Đơn Hành Chính (File Word)")
     
     st.markdown("**Mẫu CT01 - Tờ khai Cư trú**")
-    st.caption("Tờ khai thay đổi thông tin cư trú (Đăng ký thường trú, tạm trú)")
-    ct01_text = """CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nTỜ KHAI THAY ĐỔI THÔNG TIN CƯ TRÚ (Mẫu CT01)\nKính gửi: Công an xã An Viễn, thành phố Đồng Nai\n\n1. Họ và tên: ........................................................\n2. Ngày, tháng, năm sinh: ....../....../............ Sex: ..........\n3. Số định danh cá nhân/CCCD: .......................................\n4. Số điện thoại liên hệ: .............................................\n5. Nơi thường trú hiện tại: ...........................................\n6. Nơi tạm trú/Nơi ở hiện tại: ........................................\n7. Nội dung đề nghị: .................................................\n(Ví dụ: Đăng ký thường trú / Đăng ký tạm trú / Khai báo tạm vắng)\n\nAn Viễn, ngày ...... tháng ...... năm 202...\nNgười kê khai (Ký, ghi rõ họ tên)"""
-    st.download_button("Tải Mẫu CT01 (.txt)", data=ct01_text, file_name="Mau_CT01_To_Khai_Cu_Tru.txt", mime="text/plain")
+    st.caption("Tờ khai thay đổi thông tin cư trú chuẩn Word (.docx)")
+    ct01_md = """### TỜ KHAI THAY ĐỔI THÔNG TIN CƯ TRÚ (Mẫu CT01)
+Kính gửi: Công an xã An Viễn, thành phố Đồng Nai
+
+1. Họ và tên: ........................................................
+2. Ngày, tháng, năm sinh: ....../....../............ Giới tính: ..........
+3. Số định danh cá nhân/CCCD: .......................................
+4. Số điện thoại liên hệ: .............................................
+5. Nơi thường trú hiện tại: ...........................................
+6. Nơi tạm trú/Nơi ở hiện tại: ........................................
+7. Nội dung đề nghị: .................................................
+(Ví dụ: Đăng ký thường trú / Đăng ký tạm trú / Khai báo tạm vắng)
+"""
+    ct01_docx = create_legal_docx("Mẫu CT01 Tờ khai cư trú", ct01_md, "Mau_CT01")
+    st.download_button("Tải Mẫu CT01 (.docx)", data=ct01_docx, file_name="Mau_CT01_To_Khai_Cu_Tru.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
     st.markdown("**Mẫu CT07 - Giấy Xác Nhận Cư Trú**")
-    st.caption("Đơn xin cấp xác nhận thông tin về cư trú")
-    ct07_text = """CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nĐƠN XIN CẤP GIẤY XÁC NHẬN THÔNG TIN VỀ CƯ TRÚ (Mẫu CT07)\nKính gửi: Công an xã An Viễn, thành phố Đồng Nai\n\nTôi tên là: ...........................................................\nSố CCCD: .......................... Ngày cấp: .......... Nơi cấp: .......\nĐịa chỉ thường trú: ....................................................\nYêu cầu cấp Giấy xác nhận thông tin về cư trú để làm thủ tục: .........\n\nAn Viễn, ngày ...... tháng ...... năm 202...\nNgười làm đơn"""
-    st.download_button("Tải Mẫu CT07 (.txt)", data=ct07_text, file_name="Mau_CT07_Xac_Nhan_Cu_Tru.txt", mime="text/plain")
+    st.caption("Đơn xin cấp xác nhận thông tin cư trú chuẩn Word (.docx)")
+    ct07_md = """### ĐƠN XIN CẤP GIẤY XÁC NHẬN THÔNG TIN VỀ CƯ TRÚ (Mẫu CT07)
+Kính gửi: Công an xã An Viễn, thành phố Đồng Nai
+
+Tôi tên là: ...........................................................
+Số CCCD: .......................... Ngày cấp: .......... Nơi cấp: .......
+Địa chỉ thường trú: ....................................................
+Yêu cầu cấp Giấy xác nhận thông tin về cư trú để làm thủ tục: .........
+"""
+    ct07_docx = create_legal_docx("Mẫu CT07 Xác nhận cư trú", ct07_md, "Mau_CT07")
+    st.download_button("Tải Mẫu CT07 (.docx)", data=ct07_docx, file_name="Mau_CT07_Xac_Nhan_Cu_Tru.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
     st.markdown("**Mẫu MĐ01 - Khai Đăng Ký Xe**")
-    st.caption("Giấy khai đăng ký xe máy, ô tô")
-    md01_text = """CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nGIẤY KHAI ĐĂNG KÝ XE (Mẫu MĐ01)\nKính gửi: Công an xã An Viễn, thành phố Đồng Nai\n\nTên chủ xe: ...........................................................\nĐịa chỉ: ..............................................................\nSố CCCD: .............................................................\nNhãn hiệu xe: ................ Loại xe: .......... Màu sơn: ...........\nSố khung: .............................................................\nSố máy: ...............................................................\nLý do: (Đăng ký mới / Sang tên / Cấp lại biển số)\n\nAn Viễn, ngày ...... tháng ...... năm 202...\nChủ xe (Ký, ghi rõ họ tên)"""
-    st.download_button("Tải Mẫu MĐ01 (.txt)", data=md01_text, file_name="Mau_MD01_Dang_Ky_Xe.txt", mime="text/plain")
+    st.caption("Giấy khai đăng ký xe máy, ô tô chuẩn Word (.docx)")
+    md01_md = """### GIẤY KHAI ĐĂNG KÝ XE (Mẫu MĐ01)
+Kính gửi: Công an xã An Viễn, thành phố Đồng Nai
+
+Tên chủ xe: ...........................................................
+Địa chỉ: ..............................................................
+Số CCCD: .............................................................
+Nhãn hiệu xe: ................ Loại xe: .......... Màu sơn: ...........
+Số khung: .............................................................
+Số máy: ...............................................................
+Lý do đề nghị: (Đăng ký mới / Sang tên / Cấp lại biển số xe)
+"""
+    md01_docx = create_legal_docx("Mẫu MĐ01 Khai đăng ký xe", md01_md, "Mau_MD01")
+    st.download_button("Tải Mẫu MĐ01 (.docx)", data=md01_docx, file_name="Mau_MD01_Dang_Ky_Xe.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
 # -----------------------------------------------------------------------------
 # PHẦN CHÍNH (MAIN CONTAINER)
@@ -215,25 +247,14 @@ st.divider()
 for idx, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        # Nếu là câu trả lời của Trợ lý, cho phép Tải Phiếu Hướng Dẫn Hành Chính
+        # Nếu là câu trả lời của Trợ lý, cho phép Tải Phiếu Hướng Dẫn Hành Chính (.docx)
         if message["role"] == "assistant":
-            phieu_content = f"""CÔNG AN TỈNH ĐỒNG NAI             CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
-CÔNG AN XÃ AN VIỄN                   Độc lập - Tự do - Hạnh phúc
-
-PHIẾU HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH
-Ngày khởi tạo: {datetime.now().strftime('%d/%m/%Y %H:%M')}
-Địa điểm: Công an xã An Viễn, thành phố Đồng Nai
---------------------------------------------------------------------------------
-{message['content']}
---------------------------------------------------------------------------------
-Thông tin liên hệ hỗ trợ:
-- Trực ban Công an xã An Viễn: 02513.538.187 (Trực 24/24)
-- Số điện thoại khẩn cấp: 113 (An ninh trật tự), 114 (PCCC & CNCH)
-"""
+            docx_data = create_legal_docx("Phiếu Hướng Dẫn Thủ Tục", message['content'], f"Phieu_{idx}")
             st.download_button(
-                "In / Tải Phiếu Hướng Dẫn (.txt)",
-                data=phieu_content,
-                file_name=f"Phieu_Huong_Dan_Thu_Tuc_{idx}.txt",
+                "In / Tải Phiếu Hướng Dẫn (.docx)",
+                data=docx_data,
+                file_name=f"Phieu_Huong_Dan_Thu_Tuc_{idx}.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 key=f"dl_{idx}"
             )
 
@@ -288,24 +309,13 @@ if prompt_to_process:
 
         st.markdown(llm_reply)
         
-        # Tải Phiếu Hướng Dẫn Hành Chính
-        phieu_content = f"""CÔNG AN TỈNH ĐỒNG NAI             CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
-CÔNG AN XÃ AN VIỄN                   Độc lập - Tự do - Hạnh phúc
-
-PHIẾU HƯỚNG DẪN THỦ TỤC HÀNH CHÍNH
-Ngày khởi tạo: {datetime.now().strftime('%d/%m/%Y %H:%M')}
-Địa điểm: Công an xã An Viễn, thành phố Đồng Nai
---------------------------------------------------------------------------------
-{llm_reply}
---------------------------------------------------------------------------------
-Thông tin liên hệ hỗ trợ:
-- Trực ban Công an xã An Viễn: 02513.538.187 (Trực 24/24)
-- Số điện thoại khẩn cấp: 113 (An ninh trật tự), 114 (PCCC & CNCH)
-"""
+        # Tải Phiếu Hướng Dẫn Hành Chính chuẩn Word (.docx)
+        docx_data = create_legal_docx("Phiếu Hướng Dẫn Thủ Tục", llm_reply, "Phieu_Moi")
         st.download_button(
-            "In / Tải Phiếu Hướng Dẫn (.txt)",
-            data=phieu_content,
-            file_name=f"Phieu_Huong_Dan_Thu_Tuc_moi.txt",
+            "In / Tải Phiếu Hướng Dẫn (.docx)",
+            data=docx_data,
+            file_name=f"Phieu_Huong_Dan_Thu_Tuc_Moi.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             key="dl_new"
         )
         
